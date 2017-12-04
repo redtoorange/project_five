@@ -1,0 +1,12 @@
+
+# Created by https://www.gitignore.io/api/ada
+
+### Ada ###
+# Object file
+*.o
+/obj
+
+# Ada Library Information
+*.ali
+
+# End of https://www.gitignore.io/api/ada
