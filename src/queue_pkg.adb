@@ -1,4 +1,4 @@
-package queue_pkg body is
+package body queue_pkg is
 begin
    function  is_Empty(Q: Queue) return Boolean
    is
