@@ -5,23 +5,30 @@ package body stack_pkg is
    function is_Empty(S: Stack) return Boolean is
      (S = null);
    
+   function top(S: Stack) return ItemType is
+     ( S.Item);
+     
    function is_Full(S: Stack) return Boolean
    is
       t : Stack;
    begin
       t := new StackNode;
-      Free(t);
+      Free (t);
       return False;
    exception
-      when others =>
-         return True;
+      when STORAGE_ERROR =>
+         return TRUE;
    end is_Full;
    
 
    procedure push(Item: ItemType; S : in out Stack)
    is
    begin
-      S := new StackNode'(Item, S); 
+      if not is_Full(s) then
+         S := new StackNode'(Item, S); 
+      else
+         raise Stack_Full;
+      end if;
    end push;
    
    procedure pop(S : in out Stack)
@@ -30,10 +37,5 @@ package body stack_pkg is
    begin
       S := S.Next;
       Free(t);
-   end pop;
-   
-
-   function top(S: Stack) return ItemType is
-     ( S.Item);
-   
+   end pop;   
 end stack_pkg;
