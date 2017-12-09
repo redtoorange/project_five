@@ -88,10 +88,31 @@ procedure Competition is
       p.loss := 0;
    end Get;
 
+   ----------------------------------------------------------
+   -- Purpose: Get the given stat for a Player
+   -- Parameters: a: Player to lookin
+   --             s: stat to get
+   -- Returns: The stat for the player
+   ----------------------------------------------------------
+   function GetStat( a : in Player_Ptr; s : in Stat ) return Integer
+   is
+   begin
+      case s is
+         when SKILL =>
+            return a.skill;
+         when WINS =>
+            return a.win;
+         when LOSSES =>
+            return a.loss;
+         when ORDER =>
+            return a.order;
+      end case;
+   end GetStat;
+
 
    ----------------------------------------------------------
    -- Purpose: Compare two players based on a stat value.
-   -- Parameters: a, b: Players two compare
+   -- Parameters: a, b: Players to compare
    --                s: stat to use for comparison
    -- Postcondition: a will contain the winner, b will contain the loser
    -- Returns: True if the comparison produced a winner
@@ -99,36 +120,22 @@ procedure Competition is
    function compare( a, b : in out Player_Ptr; s : Stat) return Boolean
    is
       t       : Player_Ptr;
-      a_value : Integer;       -- Cache the Player's stats
-      b_value : Integer;
+      a_value : Integer := GetStat(a, s);       -- Cache the Player's stats
+      b_value : Integer := GetStat(b, s);
    begin
-      -- Cache the stat based on the comparison value
-      case s is
-         when SKILL =>
-            a_value := a.skill;
-            b_value := b.skill;
-         when WINS =>
-            a_value := a.win;
-            b_value := b.win;
-         when LOSSES =>
-            a_value := a.loss;
-            b_value := b.loss;
-         when ORDER =>
-            a_value := a.order;
-            b_value := b.order;
-      end case;
-
-
       if a_value = b_value then
          -- There was a tie, need to try another stat
          return False;
+      elsif
+        (s in SKILL | WINS and then a_value < b_value)  or else
+        (s in LOSSES | ORDER and then a_value > b_value) then
 
-      elsif a_value < b_value then
          -- b currently holds the greater value, so we need to swap them
          t := a;
          a := b;
          b := t;
       end if;
+
 
       return True;
    end compare;
